@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pencarian Harta Karun - Ulang Tahun</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #2b5c8f;
+        }
+        .pixel-font { font-family: 'Press Start 2P', cursive; }
+        .handwriting { font-family: 'Caveat', cursive; }
+
+        .hidden-step { display: none !important; opacity: 0; }
+        .fade-in { animation: fadeIn 0.8s forwards; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Efek Kertas Kuno */
+        .paper-bg {
+            background-color: #f2e3c6;
+            background-image: radial-gradient(#dbbe8d 1%, transparent 11%);
+            background-size: 12px 12px;
+            box-shadow: inset 0 0 60px #ba9759, 0 15px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Efek Buku Terbuka */
+        .book-bg {
+            background-color: #f7edd5;
+            box-shadow: inset 0 0 40px #cfa86b, 0 20px 40px rgba(0,0,0,0.6);
+            border: 10px solid #4a2f1b;
+            border-radius: 8px;
+        }
+
+        /* Kursor Ngetik */
+        .cursor::after {
+            content: '|';
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+    </style>
+</head>
+<body class="relative flex items-center justify-center">
+
+    <div class="absolute inset-0 w-full h-full z-0 flex items-center justify-center overflow-hidden">
+        <svg id="map-svg" viewBox="0 0 1000 700" class="w-full h-full object-cover min-w-[1000px] min-h-[700px]">
+            <rect width="1000" height="700" fill="#528bb2" />
+            
+            <path d="M50,100 Q60,95 70,100 M200,400 Q210,395 220,400 M800,150 Q810,145 820,150 M850,550 Q860,545 870,550 M150,600 Q160,595 170,600" stroke="#70a4c7" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+            <path d="M 150,450 C 100,280 180,120 400,100 C 550,80 650,130 750,110 C 880,130 920,280 880,450 C 840,600 650,620 450,580 C 250,580 180,520 150,450 Z" fill="#e3cb96" stroke="#cfae6c" stroke-width="8" />
+            
+            <path d="M 60,550 C 50,500 120,480 150,520 C 170,550 120,590 80,580 Z" fill="#d1b882" stroke="#bfa36b" stroke-width="4" />
+
+            <g transform="translate(90, 550) scale(0.7)">
+                <path d="M -25,-5 L 25,-5 L 15,15 L -15,15 Z" fill="#5e3d28" stroke="#3d2516" stroke-width="2"/>
+                <line x1="0" y1="-5" x2="0" y2="-35" stroke="#3d2516" stroke-width="3" />
+                <path d="M 0,-35 Q 18,-23 0,-8 Q -18,-23 0,-35" fill="#f7f7f7" stroke="#d6d6d6" stroke-width="1"/>
+            </g>
+
+            <ellipse cx="580" cy="320" rx="75" ry="35" fill="#528bb2" stroke="#467c9f" stroke-width="4" />
+
+            <polygon points="480,180 510,130 540,180" fill="#bfa36b" stroke="#a38752" stroke-width="3"/>
+            <polygon points="520,190 550,140 580,190" fill="#bfa36b" stroke="#a38752" stroke-width="3"/>
+            <polygon points="500,480 535,420 570,480" fill="#bfa36b" stroke="#a38752" stroke-width="3"/>
+            <polygon points="550,490 580,430 610,490" fill="#bfa36b" stroke="#a38752" stroke-width="3"/>
+            <polygon points="720,520 750,470 780,520" fill="#bfa36b" stroke="#a38752" stroke-width="3"/>
+
+            <polygon points="680,220 710,160 740,220" fill="#8c7246" stroke="#705933" stroke-width="3"/>
+            <polygon points="700,160 720,160 710,175" fill="#c23a3a" />
+            <path d="M705,150 Q710,130 715,150 M695,145 Q710,120 725,145" stroke="#c23a3a" stroke-width="3" fill="none"/>
+
+            <path d="M220,380 Q210,350 220,320 M260,390 Q250,360 255,330 M300,370 Q290,340 300,310" stroke="#705933" stroke-width="4" fill="none"/>
+            <circle cx="220" cy="320" r="12" fill="#4d8c4f" /><circle cx="255" cy="330" r="12" fill="#4d8c4f" /><circle cx="300" cy="310" r="12" fill="#4d8c4f" />
+
+            <path d="M 760,240 L 800,280 M 800,240 L 760,280" stroke="#c23a3a" stroke-width="10" stroke-linecap="round" />
+            
+            <g transform="translate(810, 230)">
+                <rect x="0" y="15" width="45" height="25" fill="#784823" stroke="#4a2a11" stroke-width="2" rx="3"/>
+                <path d="M 0,15 Q 22,0 45,15 Z" fill="#94592d" stroke="#4a2a11" stroke-width="2" />
+                <rect x="18" y="12" width="9" height="10" fill="#e0b234" />
+            </g>
+
+            <path id="treasure-path" 
+                  d="M 120,540 
+                     C 250,560 450,540 480,480 
+                     C 520,400 380,420 320,450 
+                     C 220,500 180,400 240,350 
+                     C 320,300 480,280 480,340
+                     C 480,400 700,380 720,310 
+                     C 740,230 600,220 770,260" 
+                  fill="none" 
+                  stroke="#ba3c3c" 
+                  stroke-width="5" 
+                  stroke-dasharray="10,12" 
+                  stroke-linecap="round" />
+
+
+            <g id="player-char" transform="translate(0,0)">
+                <rect x="-5" y="8" width="4" height="8" fill="#1e293b" rx="1"/>
+                <rect x="2" y="8" width="4" height="8" fill="#1e293b" rx="1"/>
+                <path d="M -9,-6 L 9,-6 L 11,10 L -11,10 Z" fill="#991b1b" stroke="#7f1d1d" stroke-width="1.5"/>
+                <rect x="-9" y="3" width="18" height="3" fill="#111"/>
+                <rect x="-3" y="2" width="6" height="5" fill="#e0b234"/>
+                <circle cx="0" cy="-14" r="9" fill="#fcd34d" stroke="#b45309" stroke-width="1.5"/>
+                <circle cx="-3" cy="-15" r="2.5" fill="#111"/>
+                <line x1="-9" y1="-18" x2="3" y2="-12" stroke="#111" stroke-width="1.5"/>
+                <path d="M -15,-20 Q 0,-33 15,-20 L 18,-16 Q 0,-24 -18,-16 Z" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
+                <circle cx="0" cy="-24" r="2" fill="#cc3333"/>
+            </g>
+        </svg>
+    </div>
+
+    <div class="absolute inset-0 bg-black/15 pointer-events-none z-10"></div>
+
+
+    <div id="step-1" class="absolute bottom-6 left-1/2 transform -translate-x-1/2 w-11/12 max-w-3xl z-20 cursor-pointer" onclick="advanceDialogue()">
+        <div class="bg-slate-900/95 border-4 border-amber-600 p-4 rounded-xl shadow-2xl flex items-start gap-4">
+            <div class="w-16 h-16 bg-amber-900 border-2 border-amber-400 rounded-lg p-1 flex-shrink-0 flex items-center justify-center">
+                <svg viewBox="0 0 40 40" class="w-12 h-12">
+                    <path d="M10,20 Q20,5 30,20 L35,15 Q20,0 5,15 Z" fill="#111" />
+                    <circle cx="20" cy="12" r="2" fill="#e0b234" />
+                    <circle cx="20" cy="25" r="8" fill="#fcd34d" />
+                    <polygon points="14,22 22,25 20,22" fill="#111" />
+                    <line x1="12" y1="20" x2="24" y2="26" stroke="#111" stroke-width="1.5"/>
+                    <path d="M14,29 Q20,36 26,29 Z" fill="#ff7e00" />
+                </svg>
+            </div>
+            
+            <div class="flex-1 text-white pixel-font text-[10px] md:text-xs leading-relaxed mt-1 h-20">
+                <span class="block mb-1 text-amber-400 font-bold">KAPTEN NEVIZ:</span>
+                <span id="dialogue-text" class="cursor"></span>
+            </div>
+            
+            <div class="self-end animate-bounce text-amber-400 pixel-font text-base">▼</div>
+        </div>
+    </div>
+
+
+    <div id="step-2" class="hidden-step absolute inset-0 flex items-center justify-center z-30 bg-black/40 backdrop-blur-xs">
+        <div class="paper-bg p-8 md:p-10 w-11/12 max-w-3xl rounded-xl text-center relative border-4 border-amber-900">
+            <h2 class="handwriting text-4xl font-bold text-amber-950 mb-4">Rintangan Pertama :<br>New Chapter</h2>
+            
+            <img src="Rintangan_1.jpeg" alt="Rintangan 1" class="mx-auto rounded-lg border-2 border-amber-800 shadow-md mb-4 w-auto h-80 object-cover">
+            <p class="handwriting text-2xl text-stone-900 mb-6 font-semibold">
+                "Lu inget ga sih pas detik detik di bagi kelas, behh deg deg an banget gw di sana, cuma pas lu bilang PPLG 3, gw udah seneng tuh, cuma gw prank dikit lah kalo kita ga sekelas, terus pas gw bilang kalo ternyata sekelas kita peluk-pelukan di tengah lapang kek orang gila, wkwkwkwk"
+            </p>
+
+            <button onclick="nextStep(3)" class="bg-amber-900 hover:bg-amber-950 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition transform hover:scale-105 handwriting text-2xl">
+                Lanjutkan Perjalanan ➔
+            </button>
+        </div>
+    </div>
+
+
+    <div id="step-3" class="hidden-step absolute inset-0 flex items-center justify-center z-30 bg-black/40 backdrop-blur-xs">
+        <div class="paper-bg p-8 md:p-10 w-11/12 max-w-3xl rounded-xl text-center relative border-4 border-amber-900">
+            <h2 class="handwriting text-4xl font-bold text-amber-950 mb-4">Rintangan Terakhir :<br>Main Chapter</h2>
+            
+            <img src="Rintangan_2.jpeg" alt="Rintangan 2" class="mx-auto rounded-lg border-2 border-amber-800 shadow-md mb-4 w-auto h-80 object-cover">
+            <p class="handwriting text-2xl text-stone-900 mb-6 font-semibold">
+                "Ini kelas 11 sih PEAK dan stress parah yak, banyak banget hal-hal yang masih memorable di gw, kayak terbentuknya Tychi, banyak romance juga ya wkwkwk creepy bet, tapi yang paling seru menurut gw sih jelas porak ya, bisa ketawa bareng, emosian bareng, dan juga bisa merasakan menang bersama-sama itu sangat amat menyenangkan sih."
+            </p>
+
+            <button onclick="nextStep(4)" class="bg-amber-900 hover:bg-amber-950 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition transform hover:scale-105 handwriting text-2xl">
+                Dekati Harta Karun! 🎁
+            </button>
+        </div>
+    </div>
+
+
+<div id="step-4" class="hidden-step absolute inset-0 flex items-center justify-center z-40 bg-black/60 backdrop-blur-sm">
+        <div class="book-bg w-11/12 max-w-4xl h-5/6 flex relative overflow-hidden">
+            
+            <div id="book-page-1" class="w-full h-full p-6 md:p-10 flex flex-col md:flex-row gap-6 absolute inset-0 bg-[#f7edd5] transition-transform duration-700 transform translate-x-0">
+                
+                <div class="flex-1 border-r-2 border-stone-400/40 pr-6 flex flex-col justify-center items-center text-center">
+                    <h1 class="handwriting text-4xl md:text-5xl font-bold text-amber-900 mb-4">Happy Birthday! 🎉</h1>
+                    <img src="Hadiah_1.jpeg" class="rounded shadow-xl border-4 border-white transform -rotate-2 w-48 h-64 object-cover">
+                    <h2 class="handwriting text-2xl md:text-3xl font-bold text-amber-800 mt-4">Jibun (sama muto deh sekalian, cuma ini buat lu fif)</h2>
+                </div>
+
+                <div class="flex-1 pl-6 flex flex-col justify-center">
+                    <p class="handwriting text-2xl md:text-3xl text-stone-800 leading-relaxed mb-4">
+                        Selamat ulang tahun my sahabat! Udah selesai deh petualangannya, cuma persahabatan kita mah lanjut terus yakan? wkwkwkwk
+                    </p>
+                    <p class="handwriting text-2xl md:text-3xl text-stone-800 leading-relaxed mb-4">
+                        Btw gw awalnya kaga mau bikin tau, cuma tiba-tiba mood soalnya gw ngerasa lu udah effort banget tuh mempertaruhkan segalanya buat bikin web hbd ke anu yakan, jadi yaaa karena lu kece badai yowes gw hadiahkan ke effort an lu ini dengan web sederhana buatan gw, btw bikinnya 3 jam doang kok wkwkwk
+                    </p>
+                    
+                    <div class="mt-auto text-right">
+                        <button onclick="turnPage(2)" class="text-amber-900 font-bold hover:text-amber-700 transition flex items-center justify-end w-full handwriting text-2xl">
+                            Baca Surat Kelanjutan ➔
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="book-page-2" class="w-full h-full p-6 md:p-10 flex flex-col md:flex-row gap-6 absolute inset-0 bg-[#f7edd5] transition-transform duration-700 transform translate-x-full">
+                
+                <div class="flex-1 border-r-2 border-stone-400/40 pr-6 flex flex-col justify-center">
+                    <p class="handwriting text-2xl md:text-3xl text-stone-800 leading-relaxed">
+                        Yaaa gw cuma mau bilang makasih yak sudah menjadi sahabat gw dari SMP cuy, udah kurang lebih 5 tahun lah, dan yaaa selama kita bermain juga gw kadang ngerasa marah ke lu dan sebagainya, cuma sudah gw maafkan kok kalo over, wkwkwk, yaaa lu memang kayak begitu sih orangnya, gw jadi kepikiran pemikiran orang terhadap lu :/ jadi ya mungkin bisa aja lu bakal di anggap toxic atau sebagainya sama beberapa orang (yaa kaga salah si wkwkwk) cuma yaaaa gw yakin akan satu hal yang harus lu ingat (asik).
+                    </p>
+                </div>
+
+                <div class="flex-1 pl-6 flex flex-col justify-center">
+                    <p class="handwriting text-2xl md:text-3xl text-stone-800 leading-relaxed">
+                        Kalau manusia itu jelas punya sisi baik dan buruknya, dan lu kalo bisa nampilin sisi buruk lu ke orang kan artinya lu udah jujur dan menjadi diri lu sendiri, dan itu sih yang menurut gw keren banget, jadi lu tidak menutupi semua hal yang ada di diri lu, semuanya murni sebuah ketulusan, jadi yaaa HBD cuy semoga di lancarkan yak segala urusannya. And pesan terakhir dari gw sih yaaaa <br><br>Tetap lah menjadi Jibun yang gw kenal.
+                    </p>
+                    
+                    <div class="mt-auto text-right">
+                        <button onclick="turnPage(3)" class="text-amber-900 font-bold hover:text-amber-700 transition flex items-center justify-end w-full handwriting text-2xl">
+                            Buka Halaman Hadiah ➔
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="book-page-3" class="w-full h-full p-8 flex flex-col justify-center items-center text-center absolute inset-0 bg-[#f7edd5] transition-transform duration-700 transform translate-x-full">
+                
+                <h2 class="handwriting text-4xl md:text-5xl font-bold text-amber-900 mb-4">Beres deh petualangan randomnya</h2>
+                <!-- <img src="https://via.placeholder.com/400x250?text=Hadiah+/+Kado+/+Voucher" class="rounded-xl shadow-lg border-4 border-white w-72 md:w-96 mb-6 object-cover"> -->
+                <p class="handwriting text-2xl md:text-3xl text-stone-800 mb-6 font-semibold">Gimana seru kagak? atau malah menyedihkan? soalnya gw bikinnya rada terharu dikit sih, ho-ho-ho Kapten Neviz memang orang yang kece badai ho-ho-ho</p>
+
+                <button onclick="nextStep(5)" class="bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-12 rounded-full shadow-md transition transform hover:scale-110 text-2xl handwriting">
+                    Selesai
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div id="step-5" class="hidden-step absolute inset-0 flex items-center justify-center z-50 bg-black/80">
+        <div class="bg-slate-900 border-4 border-slate-600 p-8 rounded-xl text-center shadow-2xl max-w-sm w-11/12">
+            <h3 class="pixel-font text-white text-xs leading-6 mb-6">Perjalanan telah selesai,<br>ingin mengulangnya?</h3>
+            <div class="flex justify-center gap-4">
+                <button onclick="restartGame()" class="pixel-font bg-green-600 hover:bg-green-500 text-white py-2 px-6 border-b-4 border-green-800 rounded text-xs">
+                    YA
+                </button>
+                <button onclick="alert('Sekali lagi, Selamat Ulang Tahun! 🎂')" class="pixel-font bg-red-600 hover:bg-red-500 text-white py-2 px-6 border-b-4 border-red-800 rounded text-xs">
+                    TIDAK
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const dialogues = [
+            "Ahoyy! Selamat datang di Pulau Rahasia wahai Pengembara!",
+            "Perkenalkan, saya adalah kapten Neviz, kapten yang paling bijaksana sedunia, ho-ho-ho",
+            "Tugasmu adalah mencari Harta Karun yang sangat amat bernilai tinggi di ujung pulau ini.",
+            "Namun... kamu harus melewati beberapa rintangan terlebih dahulu.",
+            "Siapkan dirimu wahai anak muda.",
+            "Mari kita mulai berjalan menjelajah pulau ini, ho-ho-ho"
+        ];
+        
+        let currentDialogueIndex = 0;
+        let isTyping = false;
+        const dialogueTextElement = document.getElementById("dialogue-text");
+        let typewriterTimer;
+
+        const path = document.getElementById('treasure-path');
+        const character = document.getElementById('player-char');
+        const totalPathLength = path.getTotalLength();
+
+        let currentProgress = 0;
+        let targetProgress = 0;
+        let startProgress = 0;
+        let pendingStep = null;
+
+        // Variabel untuk kontrol waktu animasi presisi
+        let animationStartTime = 0;
+        const animationDuration = 7000; // DIKUNCI PASTI 7 DETIK (7000 milidetik)
+        let isAnimating = false;
+
+        function typeWriter(text, i) {
+            if (i < text.length) {
+                dialogueTextElement.innerHTML = text.substring(0, i + 1);
+                typewriterTimer = setTimeout(() => typeWriter(text, i + 1), 45);
+            } else {
+                isTyping = false;
+            }
+        }
+
+        function advanceDialogue() {
+            if (isTyping) {
+                clearTimeout(typewriterTimer);
+                dialogueTextElement.innerHTML = dialogues[currentDialogueIndex];
+                isTyping = false;
+                return;
+            }
+
+            currentDialogueIndex++;
+            if (currentDialogueIndex < dialogues.length) {
+                isTyping = true;
+                typeWriter(dialogues[currentDialogueIndex], 0);
+            } else {
+                nextStep(2);
+            }
+        }
+
+        window.onload = () => {
+            isTyping = true;
+            typeWriter(dialogues[0], 0);
+            // Set posisi awal karakter di koordinat 0 (Pantai) tanpa animasi saat dimuat
+            const point = path.getPointAtLength(0);
+            character.setAttribute('transform', `translate(${point.x}, ${point.y})`);
+        };
+
+
+        // --- LOGIKA ANIMASI BERBASIS WAKTU NYATA (PASTI 7 DETIK) ---
+        function animateCharacter(timestamp) {
+            if (!isAnimating) return;
+
+            if (!animationStartTime) animationStartTime = timestamp;
+            let elapsed = timestamp - animationStartTime;
+            
+            // Hitung persentase waktu berjalan (0.0 s/d 1.0)
+            let t = Math.min(elapsed / animationDuration, 1);
+
+            // Fungsi Easing (Cubic Ease-In-Out) biar mulus di awal dan pelan di akhir rute
+            let ease = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+            // Hitung progress posisi karakter saat ini di jalur SVG
+            currentProgress = startProgress + (targetProgress - startProgress) * ease;
+            
+            const point = path.getPointAtLength(totalPathLength * currentProgress);
+            character.setAttribute('transform', `translate(${point.x}, ${point.y})`);
+
+            if (t < 1) {
+                requestAnimationFrame(animateCharacter);
+            } else {
+                // Selesai animasi berjalan
+                isAnimating = false;
+                animationStartTime = 0;
+                currentProgress = targetProgress;
+
+                // Munculkan kertas rintangan jika ada antrean
+                if (pendingStep !== null) {
+                    showPanel(pendingStep);
+                    pendingStep = null;
+                }
+            }
+        }
+
+        function moveCharacterTo(progress) {
+            startProgress = currentProgress;
+            targetProgress = progress;
+            animationStartTime = 0; 
+            if (!isAnimating) {
+                isAnimating = true;
+                requestAnimationFrame(animateCharacter);
+            }
+        }
+
+        function showPanel(stepNumber) {
+            const targetStep = document.getElementById(`step-${stepNumber}`);
+            if(targetStep) {
+                targetStep.classList.remove('hidden-step');
+                targetStep.classList.add('fade-in');
+            }
+        }
+
+
+        // --- NAVIGASI ANTAR URUTAN STEP ---
+        function nextStep(stepNumber) {
+            // Sembunyikan panel aktif dengan cepat agar fokus ke jalan karakter
+            document.querySelectorAll('div[id^="step-"]').forEach(el => {
+                el.classList.add('hidden-step');
+                el.classList.remove('fade-in');
+            });
+
+            if(stepNumber === 2) {
+                pendingStep = 2;
+                moveCharacterTo(0.32); // Jalan ke rintangan 1
+            } else if (stepNumber === 3) {
+                pendingStep = 3;
+                moveCharacterTo(0.68); // Jalan ke rintangan 2
+            } else if (stepNumber === 4) {
+                pendingStep = 4;
+                moveCharacterTo(1.0);  // Menuju tanda X harta karun
+            } else {
+                showPanel(stepNumber);
+            }
+        }
+
+
+        // --- LOGIKA BUKA BUKU (SUPORT 3 HALAMAN) ---
+        function turnPage(pageNumber) {
+            if(pageNumber === 2) {
+                // Halaman 1 geser ke kiri, Halaman 2 masuk dari kanan
+                document.getElementById('book-page-1').classList.add('-translate-x-full');
+                document.getElementById('book-page-2').classList.remove('translate-x-full');
+                document.getElementById('book-page-2').classList.add('translate-x-0');
+            } else if(pageNumber === 3) {
+                // Halaman 2 geser ke kiri, Halaman 3 masuk dari kanan
+                document.getElementById('book-page-2').classList.remove('translate-x-0');
+                document.getElementById('book-page-2').classList.add('-translate-x-full');
+                document.getElementById('book-page-3').classList.remove('translate-x-full');
+                document.getElementById('book-page-3').classList.add('translate-x-0');
+            }
+        }
+
+
+        // --- RESTART GAME ---
+        function restartGame() {
+            // Reset semua kelas transformasi halaman buku kembali ke posisi awal default
+            document.getElementById('book-page-1').classList.remove('-translate-x-full');
+            
+            document.getElementById('book-page-2').classList.remove('translate-x-0', '-translate-x-full');
+            document.getElementById('book-page-2').classList.add('translate-x-full');
+            
+            document.getElementById('book-page-3').classList.remove('translate-x-0', '-translate-x-full');
+            document.getElementById('book-page-3').classList.add('translate-x-full');
+
+            // Karakter otomatis jalan mundur anggun selama 7 detik ke pantai awal
+            moveCharacterTo(0);
+
+            currentDialogueIndex = 0;
+            dialogueTextElement.innerHTML = "";
+            
+            nextStep(1);
+            isTyping = true;
+            typeWriter(dialogues[0], 0);
+        }
+    </script>
+</body>
+</html>
